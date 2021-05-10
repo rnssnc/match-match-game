@@ -1,0 +1,51 @@
+.input-element__wrapper
+  position: relative
+  display: flex
+  align-items: flex-end
+  height: 45px
+
+.input-element__label
+  user-select: none;
+  display: block;
+  position: absolute;
+  top: 5px
+  color: var(--input-text-color)
+  transition: 0.2s;
+  
+.input-element
+  outline: none
+  width: 100%
+  height: 26px
+  padding-bottom: 5px
+  padding-left: 5px
+  font-weight: 500;
+  font-size: 14px
+  line-height: 16px
+  color: var(--input-text-color)
+  background: transparent
+  border: none
+  border-bottom: 1px solid var(--input-border-color)
+  &::placeholder 
+    user-select: none
+    color: transparent;
+  &:placeholder-shown ~ .input-element__label
+    top: 20px;
+
+.input-element:focus 
+  border-width: 2px;
+  border-image: linear-gradient(to right, var(--gradient-color-primary),var(--gradient-color-secondary));
+  border-image-slice: 1;
+  &~ .input-element__label
+    position: absolute;
+    top: 5px;
+    display: block;
+    transition: 0.2s;
+    background: linear-gradient(to right, var(--gradient-color-primary),var(--gradient-color-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;    
+
+.input-element
+  &:required,
+  &:invalid 
+   box-shadow: none; 
