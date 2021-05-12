@@ -56,7 +56,7 @@ export default class AnchorButton extends Control implements IAnchorButton {
   setValue(newValue: string): void {
     this.node.innerText = newValue;
     // if (this.icon) this.setIcon(this.state.getState('icon'));
-    this.state.setState({ value: newValue });
+    this.state.setState('value', newValue);
   }
 
   setIcon(icon: string): void {
@@ -65,6 +65,6 @@ export default class AnchorButton extends Control implements IAnchorButton {
       tagName: 'span',
       className: `button__icon icon-${icon}`,
     });
-    this.state.setState({ icon });
+    this.state.setState('icon', icon);
   }
 }

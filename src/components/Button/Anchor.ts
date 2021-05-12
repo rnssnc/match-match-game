@@ -26,6 +26,6 @@ export default class Anchor extends AnchorButton implements IAnchor {
 
   setHref(newHref: string): void {
     this.node.href = newHref;
-    this.state.setState({ href: newHref });
+    this.state.setState('href', newHref);
   }
 }

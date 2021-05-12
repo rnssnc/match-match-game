@@ -2,7 +2,7 @@
 
 interface IState {
   data: Record<string, unknown>;
-  setState(newState: Record<string, unknown>): void;
+  setState(key: string, value: unknown): void;
 }
 
 export default class State implements IState {
@@ -16,12 +16,16 @@ export default class State implements IState {
     if (onUpdate instanceof Function) this.callback = () => onUpdate();
   }
 
-  setState(newState: Record<string, unknown>): void {
-    this.data = { ...this.data, ...newState };
-    if (this.callback) this.callback(newState);
+  setState(key: string, value: unknown): void {
+    this.data[key] = value;
+
+    if (this.callback) this.callback(this.data);
   }
 
-  getState(key: string): any {
-    return this.data[key];
+  addCallback(callback: (state: Record<string, unknown>) => void): void {
+    this.callback = callback;
   }
+  // getState(key: string): any {
+  //   return this.data[key];
+  // }
 }
