@@ -13,7 +13,7 @@
   transition: all 0.3s ease
 
 .logotype__block-top
-  border: 1px solid #333333
+  border: 1px solid var(--gradient-color-secondary)
 .logotype__block-bottom
   border: 1px solid transparent
   
@@ -27,6 +27,7 @@
 
 .logotype:hover
   .logotype__block-top
+    border-color: var(--gradient-color-primary)
     transform: translateY(-2px)
   .logotype__block-bottom
     transform: translateY(2px)
