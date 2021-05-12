@@ -30,27 +30,28 @@
     gap: 5px
     &:hover .button__icon
       transform: rotate(-45deg)
+  &:disabled,
+  &--disabled
+    filter: brightness(50%)
 
 .button__icon
   display: inline-block
   transition: all 0.3s ease
   width: 24px
   height: 24px
+  background-color: var(--color-text-primary);
 
 .icon-settings
-  background-color: #333;
   -webkit-mask: url('../../assets/images/icons/gear.svg') no-repeat;
   -webkit-mask-size: contain;
   background-size: contain;
 
 .icon-cup
-  background-color: #333;
   -webkit-mask: url('../../assets/images/icons/medal.svg') no-repeat;
   -webkit-mask-size: contain;
   background-size: contain;
 
 .icon-person
-  background-color: #333;
   -webkit-mask: url('../../assets/images/icons/information.svg') no-repeat;
   -webkit-mask-size: contain;
   background-size: contain;
