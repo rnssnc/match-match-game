@@ -10,6 +10,7 @@ type Options = {
   className: string;
   onClick?: () => void;
   data?: { value: string };
+  type?: string;
   options?: { type?: ButtonTypes; modifier?: ButtonModifiers };
 };
 
@@ -20,6 +21,8 @@ export default class Button extends AnchorButton implements IButton {
 
   constructor(options: Options) {
     super(options.parentNode, 'button', `button ${options.className}`, options.data, options.options);
+
+    if (options.type) this.node.type = options.type;
 
     if (options.onClick instanceof Function) {
       this.onClick = options.onClick;
