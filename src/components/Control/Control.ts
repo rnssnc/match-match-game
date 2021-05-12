@@ -65,7 +65,7 @@ export default class Control implements IControl {
 
   render(): void {
     this.node.style.display = '';
-    this.state.setState({ isRendered: true });
+    this.state.setState('isRendered', true);
   }
 
   hide(): void {
@@ -74,6 +74,6 @@ export default class Control implements IControl {
 
   setContent(content: string): void {
     this.node.textContent = content;
-    this.state.setState({ textContent: content });
+    this.state.setState('textContent', content);
   }
 }
