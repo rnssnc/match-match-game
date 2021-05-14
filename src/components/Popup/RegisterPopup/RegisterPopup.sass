@@ -1,9 +1,70 @@
 .register-popup
   display: flex
   flex-direction: column
+  gap: 20px
   padding-top: 50px
   padding-bottom: 50px
   padding-left: 80px
   padding-right: 80px
   background-color: var(--header-background-color)
   border-radius: 10px
+  transition: all 0.5s ease
+  transform: scale(0)
+
+.popup__wrapper.active .register-popup
+  transform: scale(1)
+
+.register-popup__heading
+  color: var(--color-text-primary)
+
+.register-popup__form 
+  display: flex
+  flex-direction: column
+  gap: 20px
+
+.register-popup__form__inputs-wrapper
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 0px 20px;
+  grid-template-areas: "name-input avatar-input" "surname-input avatar-input" "email-input avatar-input";
+
+.name-input.input-element__wrapper
+  grid-area: name-input
+
+.surname-input.input-element__wrapper
+  grid-area: surname-input
+
+.email-input.input-element__wrapper
+  grid-area: email-input
+
+.avatar-input.input-element__wrapper
+  grid-area: avatar-input
+  justify-self: flex-end;
+  width: 210px;
+  height: 210px;
+
+.avatar-input.input-element
+  display: none
+
+.avatar-input.input-element:checked
+  display: flex
+
+.avatar-input.input-element__label
+  cursor: pointer
+  top: 0
+  width: 100%
+  height: 100%
+  background-color: var(--gradient-color-primary)
+  -webkit-mask: url('../../../assets/images/icons/user.svg') no-repeat;
+  -webkit-mask-size: contain;
+  background-size: contain;
+  transition: all 0.7s ease
+  &:hover
+    background-color: var(--gradient-color-secondary)
+    transform: rotate(360deg)
+
+.register-popup__form__buttons-wrapper
+  display: flex
+  justify-content: flex-end;
+  gap: 15px;
