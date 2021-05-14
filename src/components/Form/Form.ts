@@ -8,15 +8,18 @@ export interface IForm {
   inputsWrapper: Control;
   buttonsWrapper: Control;
   inputs: Input[];
-  onSubmit?: () => void;
+  onSubmit?: (e: Event) => void;
+  onReset?: (e: Event) => void;
   disableSubmit?: () => void;
+  enableSubmit?: () => void;
 }
 
 type Options = {
   parentNode: HTMLElement;
   className: string;
   inputs?: Record<string, unknown>[];
-  onSubmit?: () => void;
+  onSubmit?: (e: Event) => void;
+  onReset?: (e: Event) => void;
 };
 
 export default class Form extends Control implements IForm {
@@ -32,11 +35,14 @@ export default class Form extends Control implements IForm {
 
   inputs!: Input[];
 
-  onSubmit!: () => void;
+  onSubmit!: (e: Event) => void;
+
+  onReset!: (e: Event) => void;
 
   constructor(options: Options) {
     super({ parentNode: options.parentNode, tagName: 'form', className: options.className });
     this.node.classList.add('form');
+    this.node.id = options.className;
 
     this.inputsWrapper = new Control({
       parentNode: this.node,
@@ -60,18 +66,29 @@ export default class Form extends Control implements IForm {
       className: `${options.className}__submit-button`,
       data: { value: 'Submit' },
       options: { type: ButtonTypes.filled },
+      type: 'submit',
     });
+
+    this.submitButton.node.disabled = true;
 
     this.cancelButton = new Button({
       parentNode: this.buttonsWrapper.node,
-      className: `${options.className}__submit-button`,
+      className: `${options.className}__reset-button`,
       data: { value: 'cancel' },
       options: { type: ButtonTypes.filled },
+      type: 'reset',
     });
+
+    this.node.addEventListener('reset', this.disableSubmit);
 
     if (options.onSubmit) {
       this.onSubmit = options.onSubmit;
-      this.node.addEventListener('submit', this.onSubmit);
+      this.node.addEventListener('submit', (e: Event) => this.onSubmit(e));
+    }
+
+    if (options.onReset) {
+      this.onReset = options.onReset;
+      this.node.addEventListener('reset', (e: Event) => this.onReset(e));
     }
   }
 
@@ -83,17 +100,25 @@ export default class Form extends Control implements IForm {
       inputSettings.label,
       inputSettings.onValidate,
     );
-
-    input.node.addEventListener('newInput', (e: Event) => {
-      const isValid = (<CustomEvent>e).detail;
-      if (!isValid) this.disableSubmit();
-    });
+    input.state.addCallback(this.handleInput);
+    input.handleInput();
 
     this.inputs.push(input);
   }
 
-  disableSubmit(): void {
-    console.log(this);
-    console.log('sheeesh');
-  }
+  disableSubmit = (): void => {
+    this.submitButton.node.classList.add('button--disabled');
+    this.submitButton.node.disabled = true;
+  };
+
+  enableSubmit = (): void => {
+    this.submitButton.node.classList.remove('button--disabled');
+    this.submitButton.node.disabled = false;
+  };
+
+  handleInput = (): void => {
+    const FormHaveInvalidInputs = this.inputs.find((input) => input.state.data.isValid === false);
+    if (FormHaveInvalidInputs) this.disableSubmit();
+    else this.enableSubmit();
+  };
 }
