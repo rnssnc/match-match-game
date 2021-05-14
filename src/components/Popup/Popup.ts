@@ -22,17 +22,19 @@ export default class Popup extends Control implements IPopup {
     this.name = name;
     this.popup = new Control({ parentNode: this.node, className: `${name}-popup popup` });
 
-    this.state.setState({ isOpen: false });
-    this.node.addEventListener('click', this.hidePopup);
+    this.state.setState('isOpen', false);
+    this.node.addEventListener('mousedown', (e: Event) => {
+      if (e.target === this.node) this.hidePopup();
+    });
   }
 
-  hidePopup = (e: Event): void => {
-    if (e.target === this.node) this.node.classList.remove('active');
-    this.state.setState({ isOpen: false });
+  hidePopup = (): void => {
+    this.node.classList.remove('active');
+    this.state.setState('isOpen', false);
   };
 
   showPopup = (): void => {
     this.node.classList.add('active');
-    this.state.setState({ isOpen: true });
+    this.state.setState('isOpen', true);
   };
 }
