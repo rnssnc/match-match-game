@@ -6,22 +6,15 @@ interface IInput {
   node: HTMLInputElement;
   label: Control;
   onValidate?: (input: Input) => boolean;
+  addErrorMessage?: (text: string) => void;
 }
-
-export type InputAttributes = {
-  label?: string;
-  type?: string;
-  checked?: boolean;
-  [key: string]: any;
-};
 
 export type InputSettings = {
   parentNode?: HTMLElement;
   className?: string;
   label?: string;
   onValidate?: (input: Input) => boolean;
-  validationMessage?: string;
-  attributes: InputAttributes;
+  attributes: Record<string, unknown>;
 };
 
 const validationIcon = `
@@ -42,12 +35,14 @@ export default class Input extends Control implements IInput {
 
   wrapper: Control;
 
-  validationIcon: Control;
+  validationIcon!: Control;
+
+  validationMessage!: Control;
 
   constructor(
     parentNode: HTMLElement,
     className: string,
-    attributes?: InputAttributes,
+    attributes?: Record<string, unknown>,
     label?: string,
     onValidate?: (input: Input) => boolean,
   ) {
@@ -56,30 +51,41 @@ export default class Input extends Control implements IInput {
     this.wrapper = new Control({ parentNode, className: `${className}-input input-element__wrapper` });
     this.wrapper.node.append(this.node);
 
-    this.validationIcon = new Control({
-      parentNode: this.wrapper.node,
-      className: 'input-element__validation-icon',
-    });
+    if (onValidate instanceof Function) {
+      this.addValidation(onValidate);
 
-    this.validationIcon.node.innerHTML = validationIcon;
+      this.validationIcon = new Control({
+        parentNode: this.wrapper.node,
+        className: 'input-element__validation-icon',
+      });
+
+      this.validationIcon.node.innerHTML = validationIcon;
+
+      this.validationMessage = new Control({
+        parentNode: this.wrapper.node,
+        className: 'input-element__validation-message',
+      });
+    }
 
     if (label) {
+      this.node.id = className;
+
       this.label = new Control({
         parentNode: this.wrapper.node,
         tagName: 'label',
         className: `${className}-label input-element__label`,
       });
+
+      this.label.node.setAttribute('for', className);
       this.label.node.textContent = label;
     }
 
     if (attributes) {
       Object.keys(attributes).forEach((attribute) => {
-        this.node.setAttribute(attribute, attributes[attribute]);
+        if (onValidate && attribute === 'required') this.state.data.isValid = false;
+        if (attribute === 'type') this.node.classList.add(`input-type-${attributes[attribute]}`);
+        this.node.setAttribute(attribute, attributes[attribute] as string);
       });
-    }
-
-    if (onValidate instanceof Function) {
-      this.addValidation(onValidate);
     }
   }
 
@@ -87,15 +93,30 @@ export default class Input extends Control implements IInput {
     this.onValidate = onValidate;
 
     // this.errorMessage = new Control({parentNode: this.wrapper.node, className})
-    this.node.addEventListener('input', () => {
+    this.node.addEventListener('input', this.handleInput);
+  }
+
+  handleInput = (): void => {
+    if (this.onValidate) {
       const isValid = this.onValidate(this);
 
       if (!isValid) {
-        this.node.classList.add('input-element--invalid');
-      } else this.node.classList.remove('input-element--invalid');
+        this.wrapper.node.classList.add('input-element--invalid');
+      } else this.wrapper.node.classList.remove('input-element--invalid');
 
-      const InputInvalid = new CustomEvent('newInput', { detail: isValid });
-      this.node.dispatchEvent(InputInvalid);
-    });
+      this.state.setState('isValid', isValid);
+    }
+  };
+
+  addErrorMessage(text: string): void {
+    const span = document.createElement('span');
+    span.classList.add('error-message__message');
+    span.textContent = text;
+
+    this.validationMessage.node.append(span);
+  }
+
+  clearErrorMessage(): void {
+    this.validationMessage.node.textContent = '';
   }
 }
