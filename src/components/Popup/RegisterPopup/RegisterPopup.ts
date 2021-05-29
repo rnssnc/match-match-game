@@ -5,6 +5,7 @@ import Popup from '../Popup';
 import Headings from '../../Heading/Heading';
 import Form from '../../Form/Form';
 import Input, { InputSettings } from '../../Input/Input';
+import Database, { DatabaseRecord, uniqueFieldName } from '../../Database/Database';
 
 interface IRegisterPopup {
   heading: Control;
@@ -25,7 +26,9 @@ function isStringOfNumber(value: string): boolean {
 }
 
 function isStringHaveInvalidChars(value: string): boolean {
-  const BLOCKED_CHARS_REGEXP = new RegExp(/~|!|@|#|\$|%|\*|\(|\)|_|—|\+|=|\||:|;|"|'|`|<|>|,|\.|\?|\/|\^/);
+  const BLOCKED_CHARS_REGEXP = new RegExp(
+    /~|!|@|#|\$|%|\*|\(|\)|_|—|\+|=|\||:|;|"|'|`|<|>|,|\.|\?|\/|\^/,
+  );
 
   if (value.length > 0 && value.match(BLOCKED_CHARS_REGEXP)) return true;
 
@@ -34,6 +37,7 @@ function isStringHaveInvalidChars(value: string): boolean {
 const INPUT_SETTINGS: InputSettings[] = [
   {
     className: 'name-input',
+    id: 'name',
     label: 'Name',
     attributes: {
       type: 'text',
@@ -69,6 +73,7 @@ const INPUT_SETTINGS: InputSettings[] = [
   },
   {
     className: 'surname-input',
+    id: 'surname',
     label: 'Last name',
     attributes: {
       type: 'text',
@@ -104,6 +109,7 @@ const INPUT_SETTINGS: InputSettings[] = [
   },
   {
     className: 'email-input',
+    id: 'email',
     label: 'email',
     attributes: {
       type: 'email',
@@ -123,9 +129,8 @@ const INPUT_SETTINGS: InputSettings[] = [
 
         isValid = false;
       }
-
       const EMAIL_REGEXP = new RegExp(
-        "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
+        '^(([^<>()\\[\\]\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$',
       );
       if (nodeValue.length > 0 && !nodeValue.match(EMAIL_REGEXP)) {
         input.addErrorMessage('Email does not apply RFC standart.');
@@ -138,6 +143,7 @@ const INPUT_SETTINGS: InputSettings[] = [
   },
   {
     className: 'avatar-input',
+    id: 'avatar',
     label: ' ',
     attributes: {
       type: 'file',
@@ -151,7 +157,7 @@ export default class RegisterPopup extends Popup implements IRegisterPopup {
 
   form: Form;
 
-  constructor() {
+  constructor(database: Database, submitCallback: (record: DatabaseRecord) => void) {
     super('register');
 
     this.heading = new Control({
@@ -167,7 +173,30 @@ export default class RegisterPopup extends Popup implements IRegisterPopup {
       onReset: () => this.hidePopup(),
       onSubmit: (e: Event) => {
         e.preventDefault();
-        console.log('submit');
+
+        const record: Record<string, unknown> = {};
+
+        this.form.inputs.forEach((input) => {
+          if (input.state.data?.value) {
+            record[input.id] = input.state.data?.value;
+          }
+        });
+
+        database
+          .add(record as DatabaseRecord)
+          .then((resolve) => {
+            this.form.node.reset();
+            submitCallback(resolve as DatabaseRecord);
+          })
+          .catch((ev) => {
+            if (ev.target.error.name === 'ConstraintError') {
+              const uniqueField = this.form.inputs.find((input) => input.id === uniqueFieldName);
+              uniqueField?.addErrorMessage(
+                'This email address is already taken, please choose another one',
+              );
+              uniqueField?.state.setState('isValid', false);
+            }
+          });
       },
     });
 
@@ -176,6 +205,7 @@ export default class RegisterPopup extends Popup implements IRegisterPopup {
         className: `${inputSetting.className} register-form__input`,
         attributes: inputSetting.attributes,
         label: inputSetting.label,
+        id: inputSetting.id,
         onValidate: inputSetting.onValidate,
       });
     });
