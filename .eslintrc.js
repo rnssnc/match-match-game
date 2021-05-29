@@ -9,6 +9,6 @@ module.exports = {
   },
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
-  ignorePatterns: ['**/webpack/*.js'],
+  ignorePatterns: ['**/webpack/*.js', '*.d.ts'],
   rules: {},
 };
