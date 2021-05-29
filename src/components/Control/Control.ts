@@ -9,7 +9,7 @@ export interface IControl {
   render(): void;
 }
 
-type Options = {
+export type Options = {
   parentNode: HTMLElement;
   tagName?: string;
   className?: string;
@@ -73,7 +73,7 @@ export default class Control implements IControl {
   }
 
   setContent(content: string): void {
-    this.node.textContent = content;
+    this.node.innerHTML = content;
     this.state.setState('textContent', content);
   }
 }
