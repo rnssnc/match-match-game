@@ -99,6 +99,7 @@ export default class Form extends Control implements IForm {
       inputSettings.attributes,
       inputSettings.label,
       inputSettings.onValidate,
+      inputSettings.id,
     );
     input.state.addCallback(this.handleInput);
     input.handleInput();
