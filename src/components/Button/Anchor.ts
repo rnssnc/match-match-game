@@ -16,12 +16,15 @@ export default class Anchor extends AnchorButton implements IAnchor {
     className: string,
     data?: { value?: string; href?: string },
     options?: { type?: ButtonTypes; modifier?: ButtonModifiers },
+    onClick?: () => void,
   ) {
     const defaultData = { href: '#', ...data };
 
     super(parentNode, 'a', `button ${className}`, defaultData, options);
 
     if (data && data.href) this.setHref(data.href);
+
+    if (onClick) this.node.addEventListener('click', onClick);
   }
 
   setHref(newHref: string): void {
