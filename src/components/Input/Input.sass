@@ -10,7 +10,10 @@
   position: absolute;
   top: 5px
   font-size: 16px
-  color: var(--input-text-color)
+  background: linear-gradient(to right, var(--gradient-color-primary), var(--gradient-color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 500
   transition: 0.2s;
   
 .input-element
@@ -32,7 +35,9 @@
     color: transparent;
   &:placeholder-shown ~ .input-element__label
     top: 20px;
-
+    background: var(--input-text-color)
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 .input-element__wrapper
   & .input-element__validation-icon
     position: absolute

@@ -1,5 +1,7 @@
 import './Input.sass';
 
+import debounce from 'lodash/debounce';
+
 import Control from '../Control/Control';
 
 interface IInput {
@@ -11,6 +13,7 @@ interface IInput {
 
 export type InputSettings = {
   parentNode?: HTMLElement;
+  id?: string;
   className?: string;
   label?: string;
   onValidate?: (input: Input) => boolean;
@@ -39,20 +42,25 @@ export default class Input extends Control implements IInput {
 
   validationMessage!: Control;
 
+  id!: string;
+
   constructor(
     parentNode: HTMLElement,
     className: string,
     attributes?: Record<string, unknown>,
     label?: string,
     onValidate?: (input: Input) => boolean,
+    id?: string,
   ) {
     super({ parentNode, tagName: 'input', className: `${className}-input input-element` });
 
     this.wrapper = new Control({ parentNode, className: `${className}-input input-element__wrapper` });
     this.wrapper.node.append(this.node);
 
+    if (id) this.id = id;
+
     if (onValidate instanceof Function) {
-      this.addValidation(onValidate);
+      this.onValidate = onValidate;
 
       this.validationIcon = new Control({
         parentNode: this.wrapper.node,
@@ -87,13 +95,8 @@ export default class Input extends Control implements IInput {
         this.node.setAttribute(attribute, attributes[attribute] as string);
       });
     }
-  }
 
-  addValidation(onValidate: (input: Input) => boolean): void {
-    this.onValidate = onValidate;
-
-    // this.errorMessage = new Control({parentNode: this.wrapper.node, className})
-    this.node.addEventListener('input', this.handleInput);
+    this.node.addEventListener('input', debounce(this.handleInput, 100));
   }
 
   handleInput = (): void => {
@@ -105,6 +108,18 @@ export default class Input extends Control implements IInput {
       } else this.wrapper.node.classList.remove('input-element--invalid');
 
       this.state.setState('isValid', isValid);
+    }
+
+    this.state.setState('value', this.node.value);
+
+    if (this.node.type === 'file') {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        this.state.setState('value', reader.result);
+      };
+
+      if (this.node.files && this.node.files[0]) reader.readAsDataURL(this.node.files[0]);
     }
   };
 
