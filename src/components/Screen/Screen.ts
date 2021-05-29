@@ -1,6 +1,8 @@
 import './Screen.sass';
 
 import Control from '../Control/Control';
+import Database from '../Database/Database';
+import FinalScorePopup from '../Popup/FinalScorePopup/FinalScorePopup';
 
 export interface IScreen {
   readonly HIDE_CLASSNAME: string;
@@ -9,15 +11,34 @@ export interface IScreen {
   hideScreen(): void;
 }
 
+type Options = {
+  parentNode: HTMLElement;
+  className?: string;
+  id?: string;
+  database?: Database;
+  finalScorePopup?: FinalScorePopup;
+};
 export default class Screen extends Control implements IScreen {
   readonly HIDE_CLASSNAME = 'screen--hidden';
 
   id!: string;
 
-  constructor(parentNode: HTMLElement, className?: string, id?: string) {
-    super({ parentNode, tagName: 'section', className: `${className} screen` });
+  database!: Database;
 
-    if (id) this.id = id;
+  finalScorePopup!: FinalScorePopup;
+
+  constructor(options: Options) {
+    super({
+      parentNode: options.parentNode,
+      tagName: 'section',
+      className: `${options.className} section screen`,
+    });
+
+    if (options.database) this.database = options.database;
+
+    if (options.finalScorePopup) this.finalScorePopup = options.finalScorePopup;
+
+    if (options.id) this.id = options.id;
 
     this.hideScreen();
   }

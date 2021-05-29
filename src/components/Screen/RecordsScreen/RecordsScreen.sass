@@ -1,0 +1,41 @@
+.record-screen
+  min-height: 1000px
+
+.scores-wrapper
+  display: flex
+  flex-direction: column
+  gap: 10px
+  font-size: 16px
+  line-height: 110%
+  & .score-wrapper
+    display: flex
+    justify-content: space-between
+    padding-bottom: 5px
+    // border-bottom: 1px solid var(--gradient-color-secondary  )
+    box-shadow: 0px 4px 3px -4px var(--gradient-color-primary);
+    & .score__player-info
+      display: flex
+      gap: 20px
+    & .player-info__avatar
+      width: 35px
+      height: 35px
+      border-radius: 50%
+      background-image: url('../../../assets/images/icons/user.svg');
+      background-size: cover;
+      background-repeat: no-repeat;
+    & .player-info__description
+      display: flex
+      flex-direction: column
+      gap: 3px
+      & .player-info__name
+        font-weight: 500
+    & .player-info__score
+      display: flex
+      gap: 5px
+      justify-content: center
+      align-items: center
+      & .player-info__score--highlight
+        font-weight: 500
+        color: var(--gradient-color-secondary)
+        
+  
