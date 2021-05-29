@@ -7,6 +7,7 @@ import Navigation from '../Navigation/Navigtaion';
 import Anchor from '../Button/Anchor';
 import Button from '../Button/Button';
 import RegisterPopup from '../Popup/RegisterPopup/RegisterPopup';
+import Database from '../Database/Database';
 
 interface IHeader {
   logotype: Logotype;
@@ -17,17 +18,31 @@ export default class Header extends Section implements IHeader {
   readonly NAVIGATION_ITEMS_PROPS = [
     {
       data: { value: 'About', href: '#about' },
-      options: { type: Anchor.buttonTypes.text, modifier: Anchor.buttonModifiers.icon, icon: 'person' },
+      options: {
+        type: Anchor.buttonTypes.text,
+        modifier: Anchor.buttonModifiers.icon,
+        icon: 'person',
+      },
     },
     {
-      data: { value: 'Best scores', href: '#best-score' },
-      options: { type: Anchor.buttonTypes.text, modifier: Anchor.buttonModifiers.icon, icon: 'cup' },
+      data: { value: 'Best scores', href: '#records' },
+      options: {
+        type: Anchor.buttonTypes.text,
+        modifier: Anchor.buttonModifiers.icon,
+        icon: 'cup',
+      },
     },
     {
-      data: { value: 'Settings', href: '#game' },
-      options: { type: Anchor.buttonTypes.text, modifier: Anchor.buttonModifiers.icon, icon: 'settings' },
+      data: { value: 'Settings', href: '#settings' },
+      options: {
+        type: Anchor.buttonTypes.text,
+        modifier: Anchor.buttonModifiers.icon,
+        icon: 'settings',
+      },
     },
   ];
+
+  database!: Database;
 
   logotype: Logotype;
 
@@ -35,15 +50,18 @@ export default class Header extends Section implements IHeader {
 
   actionButtonsWrapper: Control;
 
-  actionButons: Button[];
+  registerButton: Button;
+
+  startGameButton: Anchor;
 
   registerPopup: RegisterPopup;
 
-  constructor(parentNode: HTMLElement) {
+  profileAvatar: Control;
+
+  constructor(parentNode: HTMLElement, database: Database) {
     super(parentNode, 'header', 'header');
 
-    this.logotype = new Logotype(this.contentWrapper.node);
-    this.logotype.render();
+    this.logotype = new Logotype(this.contentWrapper.node, { href: '#about' });
 
     this.navigation = new Navigation(
       this.contentWrapper.node,
@@ -56,27 +74,46 @@ export default class Header extends Section implements IHeader {
       className: 'header__action-buttons-wrapper',
     });
 
-    this.registerPopup = new RegisterPopup();
-    this.actionButons = [];
+    this.registerPopup = new RegisterPopup(database, (user) => {
+      this.registerButton.hide();
+      this.startGameButton.render();
+      if (user.avatar) {
+        this.profileAvatar.node.style.backgroundImage = `url(${user.avatar as unknown as string})`;
+      }
+      this.profileAvatar.render();
+    });
 
-    this.actionButons.push(
-      new Button({
-        parentNode: this.actionButtonsWrapper.node,
-        className: 'register-button',
-        data: { value: 'Register' },
-        options: { type: Button.buttonTypes.filled },
-        onClick: () => this.registerPopup.showPopup(),
-      }),
+    this.registerButton = new Button({
+      parentNode: this.actionButtonsWrapper.node,
+      className: 'register-button',
+      data: { value: 'Register' },
+      options: { type: Button.buttonTypes.filled },
+      onClick: () => this.registerPopup.showPopup(),
+    });
+
+    // this.startGameButton = new Button({
+    //   parentNode: this.actionButtonsWrapper.node,
+    //   className: 'start-game-button',
+    //   data: { value: 'Start game' },
+    //   options: { type: Button.buttonTypes.filled },
+    // });
+
+    this.startGameButton = new Anchor(
+      this.actionButtonsWrapper.node,
+      'start-game-button',
+      { value: 'Start game', href: '#game' },
+      { type: Button.buttonTypes.filled },
     );
 
-    this.actionButons.push(
-      new Button({
-        parentNode: this.actionButtonsWrapper.node,
-        className: 'start-game-button',
-        data: { value: 'Start game' },
-        options: { type: Button.buttonTypes.filled },
-      }),
-    );
+    this.startGameButton.hide();
+
+    this.profileAvatar = new Control({
+      parentNode: this.actionButtonsWrapper.node,
+      // tagName: 'img',
+      className: 'profile-avatar',
+    });
+
+    this.profileAvatar.hide();
 
     console.log(this);
     console.log(this.logotype);
