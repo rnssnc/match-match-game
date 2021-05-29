@@ -1,0 +1,86 @@
+.card-wrapper
+  aspect-ratio: 1/1;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  perspective: 1000;
+  overflow: hidden;
+  transition: 2s;
+
+
+.card
+  width: 100%
+  height: 100%
+  transition: 1s;
+  transform-style: preserve-3d;
+  position: relative;
+
+.card__back,
+.card__front
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 5%;
+  border: 1px solid var(--gradient-color-primary);
+  position: absolute;
+  backface-visibility: hidden;
+  top: 0;
+  left: 0;
+  transition: 0.6s;
+
+.card__back
+  background-color: white;
+  transform: rotateY(180deg);
+  display: flex;
+  color: black;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background-color: #fafafa
+  background-size: 90% 90%
+  background-repeat: no-repeat
+  background-position: center
+
+.card__front
+  z-index: 2;
+  text-align: center;
+  color: #ccc;
+  background: var(--gradient-color-primary);
+  background-size: 50% 50%
+  background-repeat: no-repeat
+  background-position: center
+
+.card--flipped
+  pointer-events: none
+
+.card--flipped .card__front
+  transform: rotateY(-180deg);
+
+.card--flipped .card__back
+  transform: rotateY(360deg)
+
+.card--incorrect .card__back 
+  background-color: red
+  opacity: 0.8
+  animation: shake 0.4s
+
+.card--correct .card__back
+  background-color: #4caf50
+
+@keyframes shake 
+  10%, 90% 
+    transform: translate3d(-1px, 0, 0);
+  
+  
+  20%, 80% 
+    transform: translate3d(2px, 0, 0);
+  
+
+  30%, 50%, 70% 
+    transform: translate3d(-2px, 0, 0);
+  
+
+  40%, 60% 
+    transform: translate3d(2px, 0, 0);
