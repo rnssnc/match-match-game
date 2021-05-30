@@ -38,7 +38,7 @@ export type TGameSettings = {
 };
 
 export const DEFAULT_GAME_SETTINGS: TGameSettings = {
-  fieldSize: FIELD_SIZES[0],
-  cardTheme: CARD_THEMES[0],
+  fieldSize: FIELD_SIZES[1],
+  cardTheme: CARD_THEMES[3],
   cardPattern: CARD_PATTERNS[0],
 };
