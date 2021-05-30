@@ -17,7 +17,7 @@ export type InputSettings = {
   className?: string;
   label?: string;
   onValidate?: (input: Input) => boolean;
-  attributes: Record<string, unknown>;
+  attributes?: Record<string, unknown>;
 };
 
 const validationIcon = `
@@ -54,7 +54,10 @@ export default class Input extends Control implements IInput {
   ) {
     super({ parentNode, tagName: 'input', className: `${className}-input input-element` });
 
-    this.wrapper = new Control({ parentNode, className: `${className}-input input-element__wrapper` });
+    this.wrapper = new Control({
+      parentNode,
+      className: `${className}-input input-element__wrapper`,
+    });
     this.wrapper.node.append(this.node);
 
     if (id) this.id = id;
