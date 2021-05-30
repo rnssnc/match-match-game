@@ -82,6 +82,7 @@ module.exports = {
     }),
     new CopyPlugin({
       patterns: [
+        { from: `${PATHS.src}/assets/themes`, to: `public/themes` },
         { from: `${PATHS.src}/assets/images/cardThemes`, to: `images/cardThemes` },
         { from: `${PATHS.src}/assets/images/cardFaces`, to: `images/cardFaces` },
       ],

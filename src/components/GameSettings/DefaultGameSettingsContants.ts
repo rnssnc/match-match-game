@@ -4,7 +4,7 @@ type CardTheme = {
 };
 
 export const CardsThemes: CardTheme[] = [
-  { name: 'animals', jsonPath: '../../assets/themes/animals.json' },
+  { name: 'animals', jsonPath: '../../public/themes/animals.json' },
   { name: 'test', jsonPath: '' },
   { name: 'test1', jsonPath: '' },
 ];
