@@ -132,6 +132,7 @@ const INPUT_SETTINGS: InputSettings[] = [
       const EMAIL_REGEXP = new RegExp(
         '^(([^<>()\\[\\]\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$',
       );
+
       if (nodeValue.length > 0 && !nodeValue.match(EMAIL_REGEXP)) {
         input.addErrorMessage('Email does not apply RFC standart.');
 
@@ -148,6 +149,26 @@ const INPUT_SETTINGS: InputSettings[] = [
     attributes: {
       type: 'file',
       placeholder: 'user avatar',
+      accept: '.jpg, .jpeg, .png, .svg',
+    },
+    onValidate(input): boolean {
+      let isValid = true;
+
+      input.clearErrorMessage();
+
+      const ACCEPTABLE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.svg'];
+
+      const extension = input.node.value.slice(input.node.value.lastIndexOf('.'));
+      if (extension && !ACCEPTABLE_EXTENSIONS.some((ext) => ext === extension)) {
+        input.addErrorMessage('Supported extensions: .jpg, .jpeg, .png, .svg');
+
+        isValid = false;
+      }
+
+      if (isValid && input.node.value !== '') input.node.classList.add('select-input--file-loaded');
+      else input.node.classList.remove('select-input--file-loaded');
+
+      return isValid;
     },
   },
 ];

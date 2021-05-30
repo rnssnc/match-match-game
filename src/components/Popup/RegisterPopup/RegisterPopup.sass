@@ -20,7 +20,7 @@
 .register-popup__form 
   display: flex
   flex-direction: column
-  gap: 20px
+  gap: 50px
 
 .register-popup__form__inputs-wrapper
   display: grid;
@@ -46,6 +46,12 @@
 
 .avatar-input.input-element
   display: none
+
+.avatar-input .avatar-input:valid ~ .input-element__validation-icon
+  fill: var(--color-text-primary);
+  
+.avatar-input .avatar-input.select-input--file-loaded ~ .input-element__validation-icon
+  fill: var(--input-validation-icon-ok)
 
 .avatar-input.input-element:checked
   display: flex
