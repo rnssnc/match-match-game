@@ -40,10 +40,10 @@ export default class GameScreen extends Screen {
       header: options.header,
     });
 
-    // if (!this.database.currentUser) {
-    //   alert('You need to register first :) Sorry I didn`t have enought time for nice popup');
-    //   return;
-    // }
+    if (!this.database.currentUser) {
+      alert('You need to register first :) Sorry I didn`t have enought time for nice popup');
+      return;
+    }
 
     this.header.startGameButton.hide();
     this.header.stopGameButton.show();
