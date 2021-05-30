@@ -5,7 +5,7 @@ import { TGameSettings } from '../GameSettings/DefaultGameSettingsContants';
 import Timer from '../Timer/Timer';
 import Card from '../Card/Card';
 
-const PREVIEW_DELAY_MS = 0;
+const PREVIEW_DELAY_MS = 30000;
 
 interface IGame {
   field: Field;
@@ -19,6 +19,7 @@ type Options = {
   gameSettings: GameSettings;
   timer: Timer;
   winCallback: (GameStats: GameStats) => void;
+  startCallback?: () => void;
 };
 
 export type GameStats = {
@@ -43,6 +44,8 @@ export default class Game extends Control implements IGame {
 
   winCallback: (GameStats: GameStats) => void;
 
+  startCallback?: () => void;
+
   constructor(options: Options) {
     super({ parentNode: options.parentNode, className: options.className });
 
@@ -50,12 +53,14 @@ export default class Game extends Control implements IGame {
 
     this.winCallback = options.winCallback;
 
+    if (options.startCallback) this.startCallback = options.startCallback;
+
     this.timer = options.timer;
 
     this.field = new Field({
       parentNode: this.node,
       className: 'game-field',
-      fieldSize: (this.gameSettings.settings as TGameSettings).fieldSize,
+      fieldSize: (this.gameSettings.settings as TGameSettings).fieldSize.size,
     });
 
     this.field
@@ -64,6 +69,10 @@ export default class Game extends Control implements IGame {
         (this.gameSettings.settings as TGameSettings).cardTheme.jsonPath,
       )
       .then(() => {
+        this.field.node.addEventListener('click', () => {
+          this.timer.seconds = -1;
+        });
+
         this.field.cards.forEach((card) => {
           card.node.addEventListener('click', () => this.cardComparer(card));
         });
@@ -96,6 +105,8 @@ export default class Game extends Control implements IGame {
 
   start(): void {
     this.field.unFlipAll();
+
+    if (this.startCallback) this.startCallback();
   }
 
   private isWin(): boolean {
