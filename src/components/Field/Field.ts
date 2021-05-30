@@ -34,7 +34,7 @@ export default class Field extends Control {
   }
 
   loadCards(frontSrc: string, backPath: string): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       fetch(backPath)
         .then((response) => response.json())
         .then((data) => {

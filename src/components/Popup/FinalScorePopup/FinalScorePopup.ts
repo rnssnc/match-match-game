@@ -6,8 +6,6 @@ import { GameStats } from '../../Game/Game';
 import Anchor from '../../Button/Anchor';
 import { ButtonTypes } from '../../Button/AnchorButton';
 
-const MESSAGE = 'Congratulations! You successfully found all matches in 14 seconds.';
-
 export default class FinalScorePopup extends Popup {
   message: Control;
 
@@ -37,7 +35,6 @@ export default class FinalScorePopup extends Popup {
     const minutes = Math.floor((score.seconds % 3600) / 60);
     const seconds = score.seconds % 60;
 
-    console.log(minutes);
     this.message.node.innerHTML = `Congratulations! You successfully found all matches in ${
       hours > 0 ? `${hours} h, ` : ''
     } ${minutes > 0 ? `${minutes} min, and ` : ''}  ${seconds} sec. You made a ${

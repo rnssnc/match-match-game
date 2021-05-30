@@ -1,7 +1,6 @@
 import Control from '../Control/Control';
 import Database from '../Database/Database';
 import Screen from '../Screen/Screen';
-import Anchor from '../Button/Anchor';
 import FinalScorePopup from '../Popup/FinalScorePopup/FinalScorePopup';
 import Header from '../Header/Header';
 
