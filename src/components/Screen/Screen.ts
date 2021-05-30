@@ -3,6 +3,7 @@ import './Screen.sass';
 import Control from '../Control/Control';
 import Database from '../Database/Database';
 import FinalScorePopup from '../Popup/FinalScorePopup/FinalScorePopup';
+import Header from '../Header/Header';
 
 export interface IScreen {
   readonly HIDE_CLASSNAME: string;
@@ -17,6 +18,7 @@ type Options = {
   id?: string;
   database?: Database;
   finalScorePopup?: FinalScorePopup;
+  header?: Header;
 };
 export default class Screen extends Control implements IScreen {
   readonly HIDE_CLASSNAME = 'screen--hidden';
@@ -27,6 +29,8 @@ export default class Screen extends Control implements IScreen {
 
   finalScorePopup!: FinalScorePopup;
 
+  header!: Header;
+
   constructor(options: Options) {
     super({
       parentNode: options.parentNode,
@@ -35,6 +39,8 @@ export default class Screen extends Control implements IScreen {
     });
 
     if (options.database) this.database = options.database;
+
+    if (options.header) this.header = options.header;
 
     if (options.finalScorePopup) this.finalScorePopup = options.finalScorePopup;
 
