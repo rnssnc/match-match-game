@@ -69,9 +69,7 @@ export default class Game extends Control implements IGame {
         (this.gameSettings.settings as TGameSettings).cardTheme.jsonPath,
       )
       .then(() => {
-        this.field.node.addEventListener('click', () => {
-          this.timer.seconds = -1;
-        });
+        this.field.node.addEventListener('click', this.skipDelay);
 
         this.field.cards.forEach((card) => {
           card.node.addEventListener('click', () => this.cardComparer(card));
@@ -80,6 +78,10 @@ export default class Game extends Control implements IGame {
         this.displayPreview();
       });
   }
+
+  private skipDelay = (): void => {
+    this.timer.seconds = -1;
+  };
 
   private win(): void {
     this.timer.pause();
@@ -104,6 +106,8 @@ export default class Game extends Control implements IGame {
   }
 
   start(): void {
+    this.field.node.removeEventListener('click', this.skipDelay);
+
     this.field.unFlipAll();
 
     if (this.startCallback) this.startCallback();
