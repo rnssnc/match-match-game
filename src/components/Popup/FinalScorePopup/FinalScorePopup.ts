@@ -32,7 +32,7 @@ export default class FinalScorePopup extends Popup {
     );
   }
 
-  show = (score: GameStats): void => {
+  display = (score: GameStats): void => {
     const hours = Math.floor(score.seconds / 3600);
     const minutes = Math.floor((score.seconds % 3600) / 60);
     const seconds = score.seconds % 60;
