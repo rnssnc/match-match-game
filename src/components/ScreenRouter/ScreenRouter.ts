@@ -3,13 +3,14 @@ import Database from '../Database/Database';
 import Screen from '../Screen/Screen';
 import Anchor from '../Button/Anchor';
 import FinalScorePopup from '../Popup/FinalScorePopup/FinalScorePopup';
+import Header from '../Header/Header';
 
 type Options = {
   parentNode: HTMLElement;
   routes: Array<{ Screen: typeof Screen; id: string }>;
   startRouteId: string;
   database: Database;
-  navigationItems?: Anchor[];
+  header?: Header;
   finalScorePopup: FinalScorePopup;
 };
 
@@ -22,7 +23,7 @@ export default class Router extends Control {
 
   database: Database;
 
-  navigationItems!: Anchor[];
+  header!: Header;
 
   finalScorePopup: FinalScorePopup;
 
@@ -43,7 +44,7 @@ export default class Router extends Control {
 
     this.finalScorePopup = options.finalScorePopup;
 
-    if (options.navigationItems) this.navigationItems = options.navigationItems;
+    if (options.header) this.header = options.header;
 
     this.database = options.database;
 
@@ -63,6 +64,7 @@ export default class Router extends Control {
         parentNode: this.node,
         database: this.database,
         finalScorePopup: this.finalScorePopup,
+        header: this.header,
       });
 
       this.currentRoute.showScreen();
@@ -72,7 +74,7 @@ export default class Router extends Control {
   };
 
   setActiveNavItem(hash: string): void {
-    this.navigationItems.forEach((item) => {
+    this.header.navigation.items.forEach((item) => {
       if (item.state.data?.href === `#${hash}`) item.node.classList.add('button--active');
       else item.node.classList.remove('button--active');
     });

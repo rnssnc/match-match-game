@@ -58,6 +58,8 @@ export default class Header extends Section implements IHeader {
 
   profileAvatar: Control;
 
+  stopGameButton: Anchor;
+
   constructor(parentNode: HTMLElement, database: Database) {
     super(parentNode, 'header', 'header');
 
@@ -91,13 +93,6 @@ export default class Header extends Section implements IHeader {
       onClick: () => this.registerPopup.showPopup(),
     });
 
-    // this.startGameButton = new Button({
-    //   parentNode: this.actionButtonsWrapper.node,
-    //   className: 'start-game-button',
-    //   data: { value: 'Start game' },
-    //   options: { type: Button.buttonTypes.filled },
-    // });
-
     this.startGameButton = new Anchor(
       this.actionButtonsWrapper.node,
       'start-game-button',
@@ -107,6 +102,15 @@ export default class Header extends Section implements IHeader {
 
     this.startGameButton.hide();
 
+    this.stopGameButton = new Anchor(
+      this.actionButtonsWrapper.node,
+      'stop-game-button',
+      { value: 'Stop game', href: '#about' },
+      { type: Button.buttonTypes.filled },
+    );
+
+    this.stopGameButton.hide();
+
     this.profileAvatar = new Control({
       parentNode: this.actionButtonsWrapper.node,
       // tagName: 'img',
@@ -114,8 +118,5 @@ export default class Header extends Section implements IHeader {
     });
 
     this.profileAvatar.hide();
-
-    console.log(this);
-    console.log(this.logotype);
   }
 }

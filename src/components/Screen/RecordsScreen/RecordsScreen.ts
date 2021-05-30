@@ -6,11 +6,13 @@ import Screen from '../Screen';
 import PlayerScore from '../../PlayerScore/PlayerScore';
 
 import Database, { DatabaseRecord } from '../../Database/Database';
+import Header from '../../Header/Header';
 
 type Options = {
   parentNode: HTMLElement;
   className: string;
   database: Database;
+  header: Header;
 };
 
 export default class RecordScreen extends Screen {
@@ -26,7 +28,12 @@ export default class RecordScreen extends Screen {
       id: 'record-screen',
       className: 'record-screen',
       database: options.database,
+      header: options.header,
     });
+
+    if (this.database.currentUser) this.header.startGameButton.show();
+    else this.header.startGameButton.hide();
+    this.header.stopGameButton.hide();
 
     this.heading = new Control({
       parentNode: this.node,
