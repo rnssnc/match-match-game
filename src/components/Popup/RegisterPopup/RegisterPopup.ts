@@ -7,6 +7,8 @@ import Form from '../../Form/Form';
 import Input, { InputSettings } from '../../Input/Input';
 import Database, { DatabaseRecord, uniqueFieldName } from '../../Database/Database';
 
+import { EMAIL_REGEXP, BLOCKED_CHARS_REGEXP, NUMBERS_REGEXP } from '../../Input/ValidationConsts';
+
 interface IRegisterPopup {
   heading: Control;
   form: Form;
@@ -19,17 +21,12 @@ function isStringEmpty(value: string): boolean {
 }
 
 function isStringOfNumber(value: string): boolean {
-  const NUMBERS_REGEXP = new RegExp('^[\\d ]*$');
   if (value.length > 0 && value.match(NUMBERS_REGEXP)) return true;
 
   return false;
 }
 
 function isStringHaveInvalidChars(value: string): boolean {
-  const BLOCKED_CHARS_REGEXP = new RegExp(
-    /~|!|@|#|\$|%|\*|\(|\)|_|—|\+|=|\||:|;|"|'|`|<|>|,|\.|\?|\/|\^/,
-  );
-
   if (value.length > 0 && value.match(BLOCKED_CHARS_REGEXP)) return true;
 
   return false;
@@ -129,9 +126,6 @@ const INPUT_SETTINGS: InputSettings[] = [
 
         isValid = false;
       }
-      const EMAIL_REGEXP = new RegExp(
-        '^(([^<>()\\[\\]\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$',
-      );
 
       if (nodeValue.length > 0 && !nodeValue.match(EMAIL_REGEXP)) {
         input.addErrorMessage('Email does not apply RFC standart.');
