@@ -3,18 +3,19 @@ import Screen from '../Screen';
 import Headings from '../../Heading/Heading';
 import Steps, { Step } from '../../Steps/Steps';
 
-import Board from '../../../assets/images/board.png';
+import Game from '../../../assets/images/game.png';
+import Settings from '../../../assets/images/Settings.png';
 import RegisterForm from '../../../assets/images/register-form.png';
 
 import Database from '../../Database/Database';
 import Header from '../../Header/Header';
 
 const STEPS_PROPS: Array<Step> = [
-  { content: 'Register new player in game', imagePath: Board },
-  { content: 'Configure your game settings', imagePath: RegisterForm },
+  { content: 'Register new player in game', imagePath: RegisterForm },
+  { content: 'Configure your game settings', imagePath: Settings },
   {
     content: 'Start you new game! Remember card positions and match it before times up.',
-    imagePath: RegisterForm,
+    imagePath: Game,
   },
 ];
 
