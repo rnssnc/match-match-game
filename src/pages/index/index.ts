@@ -50,7 +50,7 @@ class Application implements IApplication {
       routes,
       startRouteId: 'about',
       database: this.database,
-      navigationItems: this.header.navigation.items,
+      header: this.header,
       finalScorePopup: this.finalScorePopup,
     });
   }
