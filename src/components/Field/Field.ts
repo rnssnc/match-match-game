@@ -12,8 +12,6 @@ type Options = {
     columns: number;
     rows: number;
   };
-  // cardFrontSrc: string;
-  // cardBacksPath: string;
 };
 
 export default class Field extends Control {
@@ -40,12 +38,17 @@ export default class Field extends Control {
       fetch(backPath)
         .then((response) => response.json())
         .then((data) => {
-          const cardBacks = JSON.parse(data);
+          let cardBacks = JSON.parse(data);
+
+          if (cardBacks.length < this.cardsLength / 2) {
+            const repeatCards = cardBacks.slice(0, this.cardsLength / 2 - cardBacks.length);
+
+            cardBacks = _.concat(cardBacks, repeatCards);
+          }
 
           const uniqueCards = _.shuffle(cardBacks).slice(0, this.cardsLength / 2);
 
           const cards = [...uniqueCards, ...uniqueCards];
-
           _.shuffle(cards).forEach((backSrc) => {
             this.addCard({
               parentNode: this.node,
