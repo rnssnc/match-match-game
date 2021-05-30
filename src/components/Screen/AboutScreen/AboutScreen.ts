@@ -4,7 +4,7 @@ import Headings from '../../Heading/Heading';
 import Steps, { Step } from '../../Steps/Steps';
 
 import Game from '../../../assets/images/game.png';
-import Settings from '../../../assets/images/Settings.png';
+import Settings from '../../../assets/images/settings.png';
 import RegisterForm from '../../../assets/images/register-form.png';
 
 import Database from '../../Database/Database';
