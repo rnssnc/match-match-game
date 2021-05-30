@@ -23,7 +23,7 @@ export default class GameSettings {
   }
 
   setSetting(key: keyof TGameSettings, value: any): void {
-    localStorage.setItem(key, value);
+    localStorage.setItem(key, JSON.stringify(value));
 
     this.settings[key] = value;
   }
