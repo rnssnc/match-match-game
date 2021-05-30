@@ -69,7 +69,7 @@ export default class Game extends Control implements IGame {
         (this.gameSettings.settings as TGameSettings).cardTheme.jsonPath,
       )
       .then(() => {
-        this.field.node.addEventListener('click', this.skipDelay);
+        this.field.node.addEventListener('click', this.skipDelay, { once: true });
 
         this.field.cards.forEach((card) => {
           card.node.addEventListener('click', () => this.cardComparer(card));
