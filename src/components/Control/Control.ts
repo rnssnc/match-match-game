@@ -72,6 +72,10 @@ export default class Control implements IControl {
     this.node.style.display = 'none';
   }
 
+  show(): void {
+    this.node.style.display = '';
+  }
+
   setContent(content: string): void {
     this.node.innerHTML = content;
     this.state.setState('textContent', content);
