@@ -54,7 +54,7 @@ export default class PlayerScore extends Control {
     this.playerScore = new Control({
       parentNode: this.node,
       className: 'player-info__score',
-      content: `Score: <span class="player-info__score--highlight">${
+      content: `Latest score: <span class="player-info__score--highlight">${
         options.score ? options.score : '0'
       }</span>`,
     });
