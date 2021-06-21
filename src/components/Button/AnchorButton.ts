@@ -13,6 +13,11 @@ export enum ButtonModifiers {
   icon = 'icon',
 }
 
+enum CLASSES {
+  default = 'button',
+  icon = 'button__icon',
+}
+
 export interface IAnchorButton {
   options: {
     type?: ButtonTypes;
@@ -37,9 +42,9 @@ export default class AnchorButton extends Control implements IAnchorButton {
     data?: { value?: string },
     options?: { type?: ButtonTypes; modifier?: ButtonModifiers; icon?: string },
   ) {
-    let cName = className;
-    if (options && options.type) cName += ` button-${options.type}`;
-    if (options && options.modifier) cName += ` button--${options.modifier}`;
+    let cName = `${CLASSES.default} ${className}`;
+    if (options && options.type) cName += ` ${CLASSES.default}-${options.type}`;
+    if (options && options.modifier) cName += ` ${CLASSES.default}--${options.modifier}`;
 
     super({
       parentNode,
@@ -63,7 +68,7 @@ export default class AnchorButton extends Control implements IAnchorButton {
     this.icon = new Control({
       parentNode: this.node,
       tagName: 'span',
-      className: `button__icon icon-${icon}`,
+      className: `${CLASSES.icon} icon-${icon}`,
     });
     this.state.setState('icon', icon);
   }

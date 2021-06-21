@@ -20,7 +20,7 @@ export default class Button extends AnchorButton implements IButton {
   onClick!: () => void;
 
   constructor(options: Options) {
-    super(options.parentNode, 'button', `button ${options.className}`, options.data, options.options);
+    super(options.parentNode, 'button', options.className, options.data, options.options);
 
     if (options.type) this.node.type = options.type;
 

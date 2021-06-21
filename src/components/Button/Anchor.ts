@@ -20,7 +20,7 @@ export default class Anchor extends AnchorButton implements IAnchor {
   ) {
     const defaultData = { href: '#', ...data };
 
-    super(parentNode, 'a', `button ${className}`, defaultData, options);
+    super(parentNode, 'a', className, defaultData, options);
 
     if (data && data.href) this.setHref(data.href);
 
