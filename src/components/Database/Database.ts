@@ -22,25 +22,31 @@ export default class Database {
     this.storeName = 'users';
   }
 
-  init(dbName: string, version = 1): void {
-    const openRequest = indexedDB.open(dbName, version);
+  init(dbName: string, version = 1): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const openRequest = indexedDB.open(dbName, version);
 
-    openRequest.onsuccess = () => {
-      this.database = openRequest.result;
-    };
+      openRequest.onsuccess = () => {
+        this.database = openRequest.result;
 
-    openRequest.addEventListener('upgradeneeded', () => {
-      this.database = openRequest.result;
+        resolve();
+      };
 
-      const store = this.database.createObjectStore(this.storeName, {
-        keyPath: 'email',
+      openRequest.addEventListener('upgradeneeded', () => {
+        this.database = openRequest.result;
+
+        const store = this.database.createObjectStore(this.storeName, {
+          keyPath: 'email',
+        });
+
+        store.createIndex('name', 'name', { unique: false });
+        store.createIndex('surname', 'surname', { unique: false });
+        store.createIndex('email', 'email', { unique: true });
+        store.createIndex('avatar', 'avatar', { unique: false });
+        store.createIndex('score', 'score', { unique: false });
+
+        resolve();
       });
-
-      store.createIndex('name', 'name', { unique: false });
-      store.createIndex('surname', 'surname', { unique: false });
-      store.createIndex('email', 'email', { unique: true });
-      store.createIndex('avatar', 'avatar', { unique: false });
-      store.createIndex('score', 'score', { unique: false });
     });
   }
 
@@ -125,7 +131,6 @@ export default class Database {
       };
 
       result.onerror = (e: Event) => {
-        console.log(e);
         reject(e);
       };
 
