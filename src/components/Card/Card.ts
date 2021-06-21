@@ -12,9 +12,12 @@ export type Options = {
 const INCORRECT_DELAY = 400;
 
 enum CLASSES {
+  default = 'card',
   flipped = 'card--flipped',
   correct = 'card--correct',
   incorrect = 'card--incorrect',
+  front = 'card__front',
+  back = 'card__back',
 }
 
 export default class Card extends Control {
@@ -27,16 +30,16 @@ export default class Card extends Control {
   backSrc: string;
 
   constructor(options: Options) {
-    super({ parentNode: options.parentNode, className: 'card-wrapper' });
+    super({ parentNode: options.parentNode, className: `${CLASSES.default}-wrapper` });
 
-    this.card = new Control({ parentNode: this.node, className: 'card' });
+    this.card = new Control({ parentNode: this.node, className: CLASSES.default });
 
-    this.cardFront = new Control({ parentNode: this.card.node, className: 'card__front' });
+    this.cardFront = new Control({ parentNode: this.card.node, className: CLASSES.front });
     this.cardFront.node.style.backgroundImage = `url(${options.frontSrc})`;
 
     this.backSrc = options.backSrc;
 
-    this.cardBack = new Control({ parentNode: this.card.node, className: 'card__back' });
+    this.cardBack = new Control({ parentNode: this.card.node, className: CLASSES.back });
     this.cardBack.node.style.backgroundImage = `url(${this.backSrc})`;
 
     this.state.setState('isFlipped', false);

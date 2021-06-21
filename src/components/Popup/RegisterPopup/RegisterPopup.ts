@@ -4,33 +4,16 @@ import Control from '../../Control/Control';
 import Popup from '../Popup';
 import Headings from '../../Heading/Heading';
 import Form from '../../Form/Form';
-import Input, { InputSettings } from '../../Input/Input';
+import { InputSettings } from '../../Input/Input';
 import Database, { DatabaseRecord, uniqueFieldName } from '../../Database/Database';
 
-import { EMAIL_REGEXP, BLOCKED_CHARS_REGEXP, NUMBERS_REGEXP } from '../../Input/ValidationConsts';
+import { ValidationTypes } from '../../Input/InputValidator';
 
 interface IRegisterPopup {
   heading: Control;
   form: Form;
 }
 
-function isStringEmpty(value: string): boolean {
-  if (value.length === 0 || value === '-') return true;
-
-  return false;
-}
-
-function isStringOfNumber(value: string): boolean {
-  if (value.length > 0 && value.match(NUMBERS_REGEXP)) return true;
-
-  return false;
-}
-
-function isStringHaveInvalidChars(value: string): boolean {
-  if (value.length > 0 && value.match(BLOCKED_CHARS_REGEXP)) return true;
-
-  return false;
-}
 const INPUT_SETTINGS: InputSettings[] = [
   {
     className: 'name-input',
@@ -42,31 +25,7 @@ const INPUT_SETTINGS: InputSettings[] = [
       required: true,
       maxlength: '30',
     },
-    onValidate(input: Input): boolean {
-      let isValid = true;
-
-      const nodeValue = input.node.value.trim();
-
-      input.clearErrorMessage();
-
-      if (isStringEmpty(nodeValue)) {
-        input.addErrorMessage('String cannot be empty.');
-
-        isValid = false;
-      }
-      if (isStringOfNumber(nodeValue)) {
-        input.addErrorMessage('String cannot contain only numbers.');
-
-        isValid = false;
-      }
-      if (isStringHaveInvalidChars(nodeValue)) {
-        input.addErrorMessage('String cannot contain service symbols.');
-
-        isValid = false;
-      }
-
-      return isValid;
-    },
+    validationType: ValidationTypes.name,
   },
   {
     className: 'surname-input',
@@ -78,31 +37,7 @@ const INPUT_SETTINGS: InputSettings[] = [
       required: true,
       maxlength: '30',
     },
-    onValidate(input: Input): boolean {
-      let isValid = true;
-
-      const nodeValue = input.node.value.trim();
-
-      input.clearErrorMessage();
-
-      if (isStringEmpty(nodeValue)) {
-        input.addErrorMessage('String cannot be empty.');
-
-        isValid = false;
-      }
-      if (isStringOfNumber(nodeValue)) {
-        input.addErrorMessage('String cannot contain only numbers.');
-
-        isValid = false;
-      }
-      if (isStringHaveInvalidChars(nodeValue)) {
-        input.addErrorMessage('String cannot contain service symbols.');
-
-        isValid = false;
-      }
-
-      return isValid;
-    },
+    validationType: ValidationTypes.name,
   },
   {
     className: 'email-input',
@@ -114,27 +49,7 @@ const INPUT_SETTINGS: InputSettings[] = [
       required: true,
       maxlength: '30',
     },
-    onValidate(input: Input): boolean {
-      let isValid = true;
-
-      const nodeValue = input.node.value.trim();
-
-      input.clearErrorMessage();
-
-      if (isStringEmpty(nodeValue)) {
-        input.addErrorMessage('String cannot be empty.');
-
-        isValid = false;
-      }
-
-      if (nodeValue.length > 0 && !nodeValue.match(EMAIL_REGEXP)) {
-        input.addErrorMessage('Email does not apply RFC standart.');
-
-        isValid = false;
-      }
-
-      return isValid;
-    },
+    validationType: ValidationTypes.email,
   },
   {
     className: 'avatar-input',
@@ -145,25 +60,7 @@ const INPUT_SETTINGS: InputSettings[] = [
       placeholder: 'user avatar',
       accept: '.jpg, .jpeg, .png, .svg',
     },
-    onValidate(input): boolean {
-      let isValid = true;
-
-      input.clearErrorMessage();
-
-      const ACCEPTABLE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.svg'];
-
-      const extension = input.node.value.slice(input.node.value.lastIndexOf('.'));
-      if (extension && !ACCEPTABLE_EXTENSIONS.some((ext) => ext === extension)) {
-        input.addErrorMessage('Supported extensions: .jpg, .jpeg, .png, .svg');
-
-        isValid = false;
-      }
-
-      if (isValid && input.node.value !== '') input.node.classList.add('select-input--file-loaded');
-      else input.node.classList.remove('select-input--file-loaded');
-
-      return isValid;
-    },
+    validationType: ValidationTypes.file,
   },
 ];
 
@@ -197,31 +94,43 @@ export default class RegisterPopup extends Popup implements IRegisterPopup {
           }
         });
 
-        database
-          .add(record as DatabaseRecord)
-          .then((resolve) => {
-            this.form.node.reset();
-            submitCallback(resolve as DatabaseRecord);
-          })
-          .catch((ev) => {
-            if (ev.target.error.name === 'ConstraintError') {
-              const uniqueField = this.form.inputs.find((input) => input.id === uniqueFieldName);
-              uniqueField?.addErrorMessage(
-                'This email address is already taken, please choose another one',
-              );
-              uniqueField?.state.setState('isValid', false);
-            }
-          });
+        this.addDatabaseRecord(record as DatabaseRecord, database, submitCallback);
       },
     });
 
-    INPUT_SETTINGS.forEach((inputSetting) => {
+    this.addInputs(INPUT_SETTINGS);
+  }
+
+  addDatabaseRecord(
+    record: DatabaseRecord,
+    database: Database,
+    submitCallback: (record: DatabaseRecord) => void,
+  ): void {
+    database
+      .add(record as DatabaseRecord)
+      .then((resolve) => {
+        this.form.node.reset();
+        submitCallback(resolve as DatabaseRecord);
+      })
+      .catch((ev) => {
+        if (ev.target.error.name === 'ConstraintError') {
+          const uniqueField = this.form.inputs.find((input) => input.id === uniqueFieldName);
+          uniqueField?.validator.addErrorMessage(
+            'This email address is already taken, please choose another one',
+          );
+          uniqueField?.state.setState('isValid', false);
+        }
+      });
+  }
+
+  addInputs(settings: InputSettings[]): void {
+    settings.forEach((inputSetting) => {
       this.form.addInput({
         className: `${inputSetting.className} register-form__input`,
         attributes: inputSetting.attributes,
         label: inputSetting.label,
         id: inputSetting.id,
-        onValidate: inputSetting.onValidate,
+        validationType: inputSetting.validationType,
       });
     });
   }

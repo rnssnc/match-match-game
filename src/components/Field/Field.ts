@@ -17,7 +17,9 @@ type Options = {
 export default class Field extends Control {
   cards: Card[];
 
-  cardsLength: number;
+  fieldCardsCount: number;
+
+  requiredCardsCount: number;
 
   size: {
     columns: number;
@@ -30,7 +32,8 @@ export default class Field extends Control {
     this.cards = [];
 
     this.size = options.fieldSize;
-    this.cardsLength = this.size.columns * this.size.rows;
+    this.fieldCardsCount = this.size.columns * this.size.rows;
+    this.requiredCardsCount = this.fieldCardsCount / 2;
   }
 
   loadCards(frontSrc: string, backPath: string): Promise<void> {
@@ -38,28 +41,36 @@ export default class Field extends Control {
       fetch(backPath)
         .then((response) => response.json())
         .then((data) => {
-          let cardBacks = JSON.parse(data);
+          let parsedCardBacks = JSON.parse(data);
 
-          if (cardBacks.length < this.cardsLength / 2) {
-            const repeatCards = cardBacks.slice(0, this.cardsLength / 2 - cardBacks.length);
+          if (parsedCardBacks.length < this.requiredCardsCount) {
+            const repeatCards = parsedCardBacks.slice(
+              0,
+              this.requiredCardsCount - parsedCardBacks.length,
+            );
 
-            cardBacks = _.concat(cardBacks, repeatCards);
+            parsedCardBacks = _.concat(parsedCardBacks, repeatCards);
           }
 
-          const uniqueCards = _.shuffle(cardBacks).slice(0, this.cardsLength / 2);
+          const uniqueCards = _.shuffle(parsedCardBacks).slice(0, this.requiredCardsCount);
 
-          const cards = [...uniqueCards, ...uniqueCards];
-          _.shuffle(cards).forEach((backSrc) => {
-            this.addCard({
-              parentNode: this.node,
-              backSrc,
-              className: 'card',
-              frontSrc,
-            });
-          });
+          const cardBacks = [...uniqueCards, ...uniqueCards];
+
+          this.addCards(cardBacks, frontSrc);
 
           resolve();
         });
+    });
+  }
+
+  private addCards(cardBacks: string[], frontSrc: string): void {
+    _.shuffle(cardBacks).forEach((backSrc) => {
+      this.addCard({
+        parentNode: this.node,
+        backSrc,
+        className: 'card',
+        frontSrc,
+      });
     });
   }
 

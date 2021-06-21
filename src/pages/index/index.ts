@@ -25,33 +25,32 @@ const routes = [
 ];
 
 class Application implements IApplication {
-  header: Header;
+  header!: Header;
 
-  screenRouter: ScreenRouter;
+  screenRouter!: ScreenRouter;
 
   database: Database;
 
   readonly rootElement: HTMLElement;
 
-  finalScorePopup: FinalScorePopup;
+  finalScorePopup!: FinalScorePopup;
 
   constructor(rootElement: HTMLElement) {
     this.rootElement = rootElement;
-
-    this.database = new Database();
-    this.database.init('rnssnc', 1);
-
-    this.header = new Header(rootElement, this.database);
-
     this.finalScorePopup = new FinalScorePopup();
 
-    this.screenRouter = new ScreenRouter({
-      parentNode: rootElement,
-      routes,
-      startRouteId: 'about',
-      database: this.database,
-      header: this.header,
-      finalScorePopup: this.finalScorePopup,
+    this.database = new Database();
+    this.database.init('rnssnc', 1).then(() => {
+      this.header = new Header(rootElement, this.database);
+
+      this.screenRouter = new ScreenRouter({
+        parentNode: rootElement,
+        routes,
+        startRouteId: 'about',
+        database: this.database,
+        header: this.header,
+        finalScorePopup: this.finalScorePopup,
+      });
     });
   }
 }

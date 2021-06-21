@@ -1,7 +1,7 @@
 import Control from '../Control/Control';
 import Input, { InputSettings } from '../Input/Input';
 import Button from '../Button/Button';
-import { ButtonTypes } from '../Button/AnchorButton';
+import { ButtonModifiers, ButtonTypes } from '../Button/AnchorButton';
 
 export interface IForm {
   node: HTMLFormElement;
@@ -98,22 +98,23 @@ export default class Form extends Control implements IForm {
       `${inputSettings.className}`,
       inputSettings.attributes,
       inputSettings.label,
-      inputSettings.onValidate,
+      inputSettings.validationType,
       inputSettings.id,
     );
     input.state.addCallback(this.handleInput);
-    input.handleInput();
+
+    if (input.validator) input.validator.handleInput();
 
     this.inputs.push(input);
   }
 
   disableSubmit = (): void => {
-    this.submitButton.node.classList.add('button--disabled');
+    this.submitButton.node.classList.add(ButtonModifiers.disabled);
     this.submitButton.node.disabled = true;
   };
 
   enableSubmit = (): void => {
-    this.submitButton.node.classList.remove('button--disabled');
+    this.submitButton.node.classList.remove(ButtonModifiers.disabled);
     this.submitButton.node.disabled = false;
   };
 

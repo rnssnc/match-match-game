@@ -50,6 +50,7 @@ export default class Router extends Control {
     window.addEventListener('hashchange', this.showRoute);
 
     window.addEventListener('load', this.showRoute);
+    this.showRoute();
   }
 
   showRoute = (): void => {
@@ -72,6 +73,7 @@ export default class Router extends Control {
     this.setActiveNavItem(hash);
   };
 
+  // Лучше вынести в колбек на ScreenChange
   setActiveNavItem(hash: string): void {
     this.header.navigation.items.forEach((item) => {
       if (item.state.data?.href === `#${hash}`) item.node.classList.add('button--active');

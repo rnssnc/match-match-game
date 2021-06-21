@@ -8,6 +8,9 @@ import PlayerScore from '../../PlayerScore/PlayerScore';
 import Database, { DatabaseRecord } from '../../Database/Database';
 import Header from '../../Header/Header';
 
+const RECORDS_TO_SHOW = 10;
+const EMPTY_SCORES_MESSAGE = 'Users not found. Please register.';
+
 type Options = {
   parentNode: HTMLElement;
   className: string;
@@ -21,6 +24,8 @@ export default class RecordScreen extends Screen {
   recordsWrapper: Control;
 
   records: Control[];
+
+  emptyMessage!: Control;
 
   constructor(options: Options) {
     super({
@@ -44,18 +49,45 @@ export default class RecordScreen extends Screen {
 
     this.recordsWrapper = new Control({ parentNode: this.node, className: 'scores-wrapper' });
 
+    this.database = options.database;
+
     this.records = [];
 
-    options.database.readFiltered('email').then((records) => {
-      records
-        .sort((recordA, recordB) => {
-          if (recordA.score >= 0 && recordB.score >= 0) {
-            return recordA.score - recordB.score > 0 ? -1 : 1;
-          }
-          return 0;
-        })
-        .slice(0, 10)
-        .map((record) => this.addRecord(record));
+    this.getRecords().then((recordsData) => {
+      if (recordsData.length > 0) {
+        const sortedRecordsData = RecordScreen.sortRecords(recordsData);
+
+        this.addRecords(sortedRecordsData, RECORDS_TO_SHOW);
+      } else {
+        this.emptyMessage = new Control({
+          parentNode: this.node,
+          className: 'empty-scores-message',
+          content: EMPTY_SCORES_MESSAGE,
+        });
+      }
+    });
+  }
+
+  private static sortRecords(records: DatabaseRecord[]): DatabaseRecord[] {
+    return records.sort((recordA, recordB) => {
+      if (recordA.score >= 0 && recordB.score >= 0) {
+        return recordA.score - recordB.score > 0 ? -1 : 1;
+      }
+      return 0;
+    });
+  }
+
+  getRecords(): Promise<DatabaseRecord[]> {
+    return new Promise((resolve) => {
+      this.database.readFiltered('email').then((records) => {
+        resolve(records);
+      });
+    });
+  }
+
+  addRecords(records: DatabaseRecord[], count: number): void {
+    records.forEach((record, index) => {
+      if (index < count) this.addRecord(record);
     });
   }
 
