@@ -1,0 +1,89 @@
+.select-input__wrapper
+  position: relative
+  width: 100%
+  &::after
+    pointer-events: none
+    position: absolute;
+    content: "";
+    width: 50%;
+    height: 1px;
+    background: linear-gradient(to right, var(--gradient-color-primary), var(--gradient-color-secondary));
+    left: 0;
+    bottom: 1px
+    transition: left .3s ease;
+  &.value-display--active::after
+    left: 48%
+  & .input-element__wrapper
+    padding-left: 5px
+    height: 25px
+  & .input-element__label
+    cursor: pointer
+    font-weight: normal
+    color: var(--color-text-inversed)
+    background: none
+    -webkit-text-fill-color: inherit
+    width: 100%
+    
+.select-input__value-display
+  cursor: pointer
+  min-height: 20px
+  width: 100%
+  padding-bottom: 5px
+
+.select-input__value-display::after
+  content: ''
+  position: absolute
+  width: 0;
+  height: 0;
+  right: 10px
+  top: 50%
+  transform: translateY(-50%)
+  border-style: solid;
+  border-width: 8px 6px 0 6px;
+  border-color: #313131 transparent transparent transparent;
+  -webkit-transform:rotate(360deg)
+  transition: all 0.3s ease
+
+.select-input__value-display.value-display--active::after,
+.select-input__value-display:hover::after
+  transform: translate(-5px, -50%) rotate(360deg)
+
+.select-input__value-display.value-display--active::after,
+  transform: translate(-5px, -50%) rotate(180deg)
+
+.select-input__value-display,
+  color: var(--color-text-inversed)
+
+.select-input__value-display,
+.select-input__option,
+.popup-input
+  font-size: 20px
+  line-height: 24px
+
+.select-input__options-wrapper
+  position: absolute
+  width: 100%
+  display: none
+  flex-direction: column
+  gap: 5px
+  padding-top: 5px
+  padding-bottom: 5px
+  background-color: var(--color-text-primary)
+  border: 1px solid var(--color-text-inversed)
+  border-top: none
+  border-radius: 5px
+  z-index: 2
+
+input[type="radio"].select-input__option 
+  display: none
+
+.input-element__wrapper:hover label.select-input__option 
+  padding-left: 10px
+
+
+.options-wrapper--active
+  display: flex
+
+.input-fieldset
+  display: flex
+  justify-content: space-between;

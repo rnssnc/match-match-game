@@ -1,0 +1,57 @@
+.button
+  cursor: pointer
+  position: relative;
+  display: flex;
+  justify-content: center;
+  vertical-align: center;
+  align-items: center;
+  text-decoration: none;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  transition: background 0.3s ease;
+  background: none;
+  border: none;
+  &.button-filled
+    padding: 10px 20px
+    font-weight: 700
+    font-size: 16px
+    text-transform: uppercase
+    border-radius: 5px
+    color: var(--color-text-inversed)
+    background: linear-gradient(to right, var(--gradient-color-primary) 0%, var(--gradient-color-secondary) 51%, #e91e63 100%);
+    background-size: 200% auto;
+    color: white;            
+    border-radius: 10px;
+    &:hover
+      background-position: right center 
+  &.button--icon
+    flex-direction: row-reverse
+    gap: 5px
+    &:hover .button__icon
+      transform: rotate(-45deg)
+  &:disabled,
+  &--disabled
+    filter: brightness(50%)
+
+.button__icon
+  display: inline-block
+  transition: all 0.3s ease
+  width: 24px
+  height: 24px
+  background-color: var(--color-text-primary);
+
+.icon-settings
+  -webkit-mask: url('../../assets/images/icons/gear.svg') no-repeat;
+  -webkit-mask-size: contain;
+  background-size: contain;
+
+.icon-cup
+  -webkit-mask: url('../../assets/images/icons/medal.svg') no-repeat;
+  -webkit-mask-size: contain;
+  background-size: contain;
+
+.icon-person
+  -webkit-mask: url('../../assets/images/icons/information.svg') no-repeat;
+  -webkit-mask-size: contain;
+  background-size: contain;

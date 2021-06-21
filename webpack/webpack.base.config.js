@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-// const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
@@ -70,6 +70,7 @@ module.exports = {
     filename: `[name]_[fullhash:8].min.js`,
   },
   resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
     alias: {
       '@': PATHS.src,
     },
@@ -79,13 +80,13 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: `[name]_[fullhash:8].css`,
     }),
-    // new CopyWebpackPlugin({
-    //   patterns: [
-    //     { from: `${PATHS.src}/fonts`, to: `fonts` },
-    //     { from: `${PATHS.src}/favicons`, to: 'favicons' },
-    //     { from: `${PATHS.src}/img`, to: `img` },
-    //   ],
-    // }),
+    new CopyPlugin({
+      patterns: [
+        { from: `${PATHS.src}/assets/themes`, to: `public/themes` },
+        { from: `${PATHS.src}/assets/images/cardThemes`, to: `images/cardThemes` },
+        { from: `${PATHS.src}/assets/images/cardFaces`, to: `images/cardFaces` },
+      ],
+    }),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
@@ -105,7 +106,7 @@ module.exports = {
           filename: `${fileName}.html`,
           template: `./pages/${fileName}/${fileName}.pug`,
           chunks: fileName,
-          inject: 'body',
+          inject: 'head',
           minify: false,
         }),
     ),

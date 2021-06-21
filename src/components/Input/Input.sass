@@ -1,0 +1,89 @@
+.input-element__wrapper
+  position: relative
+  display: flex
+  align-items: flex-end
+  height: 45px
+
+.input-element__label
+  user-select: none;
+  display: block;
+  position: absolute;
+  top: 5px
+  font-size: 16px
+  background: linear-gradient(to right, var(--gradient-color-primary), var(--gradient-color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 500
+  transition: 0.2s;
+  
+.input-element
+  outline: none
+  width: 100%
+  height: 26px
+  padding-bottom: 5px
+  padding-left: 5px
+  padding-right: 30px;
+  font-weight: 500;
+  font-size: 16px
+  line-height: 16px
+  color: var(--input-text-color)
+  background: transparent
+  border: none
+  border-bottom: 1px solid var(--input-border-color)
+  &::placeholder 
+    user-select: none
+    color: transparent;
+  &:placeholder-shown ~ .input-element__label
+    top: 20px;
+    background: var(--input-text-color)
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+.input-element__wrapper
+  & .input-element__validation-icon
+    position: absolute
+    right: 5px
+    transition: fill 0.5s ease
+  & .input-element__validation-icon
+    fill: var(--input-validation-icon-ok)
+  & .input-element:placeholder-shown ~ .input-element__validation-icon
+    fill: var(--color-text-primary)
+  &.input-element--invalid .input-element__validation-icon
+    fill: var(--input-validation-icon-error)
+
+.input-element:focus 
+  border-width: 2px;
+  border-image: linear-gradient(to right, var(--gradient-color-primary),var(--gradient-color-secondary));
+  border-image-slice: 1;
+  &~ .input-element__label
+    position: absolute;
+    top: 5px;
+    display: block;
+    transition: 0.2s;
+    background: linear-gradient(to right, var(--gradient-color-primary),var(--gradient-color-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;    
+
+.input-element__validation-message
+  display: flex
+  flex-direction: column
+  position: absolute
+  left: 0;
+  top: calc(100% + 5px);
+  width: 100%
+  padding-left: 10px;
+  padding-right: 5px;
+  z-index: 1
+  font-size: 12px
+  line-height: 14px
+  color: var(--input-validation-icon-error)
+  & .error-message__message::before
+    content: '*'
+    position: absolute;
+    left: 2px
+
+
+.input-element
+  &:required,
+  &:invalid 
+   box-shadow: none; 
